@@ -744,6 +744,11 @@ function create_background_page_ui(
 
     if (typeof tempGraph?.setViewState === "function" && resolvedPage.viewState) {
       tempGraph.setViewState(resolvedPage.viewState);
+      // setViewState assigns view.scale and view.translate without
+      // revalidating, so cell states keep scale 1 while getSvg divides by
+      // the stored scale: exports of background pages come out scaled and
+      // shifted.
+      tempGraph.view.revalidate();
     } else if (
       resolvedPage.viewState?.defaultParent &&
       typeof tempGraph?.setDefaultParent === "function"
